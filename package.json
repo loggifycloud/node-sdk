@@ -1,0 +1,19 @@
+{
+  "name": "@loggify/node",
+  "version": "0.1.0",
+  "description": "Loggify Node.js monitoring SDK",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "npm run build && node --test"
+  },
+  "dependencies": {
+    "@loggify/shared": "file:../shared"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  }
+}
