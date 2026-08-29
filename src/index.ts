@@ -171,7 +171,7 @@ class MonitorImpl {
 
   init(options: MonitorOptions) {
     this.opts = {
-      endpoint: 'http://localhost:3001',
+      endpoint: 'https://ingest.loggify.cloud',
       sampleRate: 1,
       flushIntervalMs: 2000,
       maxBuffer: 500,

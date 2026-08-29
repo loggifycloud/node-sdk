@@ -1,7 +1,7 @@
-# @loggify/node
+# @loggifycloud/node
 
 ```ts
-import { Monitor } from '@loggify/node';
+import { Monitor } from '@loggifycloud/node';
 
 Monitor.init({
   apiKey: process.env.MONITOR_API_KEY!,
@@ -47,7 +47,7 @@ headers.traceparent = Monitor.injectTraceparent(span);
 ```
 
 For NestJS route templates (`GET /orders/:id`), exception filters, and
-`LoggifyModule`, use [`@loggify/nestjs`](../nestjs-sdk).
+`LoggifyModule`, use [`@loggifycloud/nestjs`](../nestjs-sdk).
 
 Runnable demo: `../test-app` (`Monitor.init`, then shim `pg` / `ioredis`).
 
@@ -55,7 +55,7 @@ Runnable demo: `../test-app` (`Monitor.init`, then shim `pg` / `ioredis`).
 
 ```ts
 import http from 'node:http';
-import { Monitor } from '@loggify/node';
+import { Monitor } from '@loggifycloud/node';
 
 Monitor.init({
   apiKey: process.env.MONITOR_API_KEY!,
@@ -78,7 +78,7 @@ its underlying HTTP server:
 
 ```ts
 import express from 'express';
-import { Monitor } from '@loggify/node';
+import { Monitor } from '@loggifycloud/node';
 
 Monitor.init({
   apiKey: process.env.MONITOR_API_KEY!,
@@ -93,11 +93,11 @@ app.listen(3000);
 
 ## NestJS
 
-Use `@loggify/nestjs` so spans use controller routes (`/orders/:id`) and 5xx
+Use `@loggifycloud/nestjs` so spans use controller routes (`/orders/:id`) and 5xx
 exceptions are captured:
 
 ```ts
-import { Monitor } from '@loggify/nestjs';
+import { Monitor } from '@loggifycloud/nestjs';
 
 Monitor.init({
   apiKey: process.env.LOGGIFY_KEY!,

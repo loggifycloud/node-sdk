@@ -1,16 +1,23 @@
 {
-  "name": "@loggify/node",
+  "name": "@loggifycloud/node",
   "version": "0.1.0",
   "description": "Loggify Node.js monitoring SDK",
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": ["dist"],
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
-    "test": "npm run build && node --test"
+    "test": "npm run build && node --test",
+    "prepublishOnly": "npm run build"
   },
-  "dependencies": {
-    "@loggify/shared": "file:../shared"
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loggifycloud/node-sdk.git"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
