@@ -85,6 +85,8 @@ type MetricEvent = {
   metricName: string;
   value: number;
   tags?: Record<string, string>;
+  serviceName?: string;
+  environment?: string;
 };
 
 type SpanEvent = {
@@ -941,18 +943,34 @@ class MonitorImpl {
     return { message: format(...formatArgs), attributes };
   }
 
+  private runtimeTags(): Record<string, string> {
+    const tags: Record<string, string> = { pid: String(process.pid) };
+    if (this.hostname) tags.hostname = this.hostname;
+    return tags;
+  }
+
+  private pushMetric(metricName: string, value: number) {
+    this.metricBuf.push({
+      metricName,
+      value,
+      tags: this.runtimeTags(),
+      serviceName: this.opts.service,
+      environment: this.opts.environment,
+    });
+  }
+
   private instrumentRuntime() {
     const collect = () => {
       try {
         const mem = process.memoryUsage();
         const cpu = process.cpuUsage();
-        this.metricBuf.push({ metricName: 'memory_usage', value: mem.rss / 1024 / 1024 });
-        this.metricBuf.push({ metricName: 'heap_used', value: mem.heapUsed / 1024 / 1024 });
-        this.metricBuf.push({ metricName: 'cpu_usage', value: (cpu.user + cpu.system) / 1000 });
-        this.metricBuf.push({ metricName: 'process_uptime', value: process.uptime() });
+        this.pushMetric('memory_usage', mem.rss / 1024 / 1024);
+        this.pushMetric('heap_used', mem.heapUsed / 1024 / 1024);
+        this.pushMetric('cpu_usage', (cpu.user + cpu.system) / 1000);
+        this.pushMetric('process_uptime', process.uptime());
         const start = Date.now();
         setImmediate(() => {
-          this.metricBuf.push({ metricName: 'event_loop_lag', value: Date.now() - start });
+          this.pushMetric('event_loop_lag', Date.now() - start);
         });
       } catch {
         /* ignore */
