@@ -1,6 +1,6 @@
 {
   "name": "@loggifycloud/node",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Loggify Node.js monitoring SDK",
   "homepage": "https://loggify.cloud/docs",
   "license": "MIT",
