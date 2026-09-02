@@ -2,6 +2,7 @@
   "name": "@loggifycloud/node",
   "version": "0.1.2",
   "description": "Loggify Node.js monitoring SDK",
+  "homepage": "https://loggify.cloud/docs",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

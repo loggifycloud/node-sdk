@@ -1,5 +1,7 @@
 # @loggifycloud/node
 
+Documentation: [https://loggify.cloud/docs](https://loggify.cloud/docs)
+
 ```ts
 import { Monitor } from '@loggifycloud/node';
 
