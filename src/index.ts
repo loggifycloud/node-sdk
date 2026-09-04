@@ -9,6 +9,10 @@ export interface MonitorOptions {
   apiKey: string;
   service: string;
   environment: string;
+  /**
+   * Ingest URL. `undefined` / empty is ignored. Falls back to `LOGGIFY_ENDPOINT`,
+   * then `https://ingest.loggify.cloud`.
+   */
   endpoint?: string;
   sampleRate?: number;
   flushIntervalMs?: number;
@@ -131,6 +135,19 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
   );
 }
 
+export const DEFAULT_INGEST_ENDPOINT = 'https://ingest.loggify.cloud';
+
+function envString(name: string): string {
+  const value = process.env[name];
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+function resolveEndpoint(override?: string): string {
+  const fromOpt = typeof override === 'string' ? override.trim() : '';
+  const raw = fromOpt || envString('LOGGIFY_ENDPOINT') || DEFAULT_INGEST_ENDPOINT;
+  return raw.replace(/\/+$/, '');
+}
+
 function resolveHostname(override?: string): string {
   const trimmed = typeof override === 'string' ? override.trim() : '';
   if (trimmed) return trimmed.slice(0, 255);
@@ -140,7 +157,7 @@ function resolveHostname(override?: string): string {
   } catch {
     /* ignore */
   }
-  const env = typeof process.env.HOSTNAME === 'string' ? process.env.HOSTNAME.trim() : '';
+  const env = envString('HOSTNAME');
   return (env || 'localhost').slice(0, 255);
 }
 
@@ -173,7 +190,6 @@ class MonitorImpl {
 
   init(options: MonitorOptions) {
     this.opts = {
-      endpoint: 'https://ingest.loggify.cloud',
       sampleRate: 1,
       flushIntervalMs: 2000,
       maxBuffer: 500,
@@ -181,6 +197,7 @@ class MonitorImpl {
       captureConsole: true,
       captureLoggers: true,
       ...options,
+      endpoint: resolveEndpoint(options.endpoint),
     };
     this.release = options.release ?? this.release;
     this.hostname = resolveHostname(options.hostname);

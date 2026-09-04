@@ -626,3 +626,58 @@ test('extracts and injects W3C traceparent across HTTP hops', async (t) => {
   assert.equal(captured.length, 1);
   assert.equal(captured[0], `00-${clientSpan.traceId}-${clientSpan.spanId}-01`);
 });
+
+test('defaults to the cloud ingest URL when endpoint and LOGGIFY_ENDPOINT are omitted', async (t) => {
+  const posts = [];
+  const originalFetch = global.fetch;
+  const previous = process.env.LOGGIFY_ENDPOINT;
+  delete process.env.LOGGIFY_ENDPOINT;
+  global.fetch = async (url) => {
+    posts.push(String(url));
+    return { status: 202 };
+  };
+  t.after(() => {
+    global.fetch = originalFetch;
+    if (previous === undefined) delete process.env.LOGGIFY_ENDPOINT;
+    else process.env.LOGGIFY_ENDPOINT = previous;
+  });
+
+  Monitor.init({
+    apiKey: 'test-key',
+    service: 'test-service',
+    environment: 'test',
+    endpoint: process.env.LOGGIFY_ENDPOINT,
+    flushIntervalMs: 60_000,
+    captureConsole: false,
+    captureLoggers: false,
+  });
+  await Monitor.flush();
+  assert.ok(posts.some((url) => url === 'https://ingest.loggify.cloud/v1/ingest'));
+});
+
+test('LOGGIFY_ENDPOINT overrides the default when init omits endpoint', async (t) => {
+  const posts = [];
+  const originalFetch = global.fetch;
+  const previous = process.env.LOGGIFY_ENDPOINT;
+  process.env.LOGGIFY_ENDPOINT = 'http://localhost:3001/';
+  global.fetch = async (url) => {
+    posts.push(String(url));
+    return { status: 202 };
+  };
+  t.after(() => {
+    global.fetch = originalFetch;
+    if (previous === undefined) delete process.env.LOGGIFY_ENDPOINT;
+    else process.env.LOGGIFY_ENDPOINT = previous;
+  });
+
+  Monitor.init({
+    apiKey: 'test-key',
+    service: 'test-service',
+    environment: 'test',
+    flushIntervalMs: 60_000,
+    captureConsole: false,
+    captureLoggers: false,
+  });
+  await Monitor.flush();
+  assert.ok(posts.some((url) => url === 'http://localhost:3001/v1/ingest'));
+});

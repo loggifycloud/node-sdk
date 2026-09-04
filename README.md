@@ -12,6 +12,8 @@ Monitor.init({
 });
 ```
 
+Ingest defaults to `https://ingest.loggify.cloud`. Set `LOGGIFY_ENDPOINT` (or `endpoint`) only to override it, for example a local collector. Empty/`undefined` values do not disable the default.
+
 Call `Monitor.init` **before** requiring `pg`, `mysql`, `mysql2`, `ioredis`,
 `redis`, or `mongodb` - or at least before your first query. The SDK patches
 those clients automatically, like a New Relic / Datadog agent. You do not wrap
