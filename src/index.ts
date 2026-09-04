@@ -141,7 +141,7 @@ function resolveHostname(override?: string): string {
     /* ignore */
   }
   const env = typeof process.env.HOSTNAME === 'string' ? process.env.HOSTNAME.trim() : '';
-  return env.slice(0, 255);
+  return (env || 'localhost').slice(0, 255);
 }
 
 class MonitorImpl {
